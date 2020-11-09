@@ -1,7 +1,7 @@
 #version 300 es
 
 precision highp float;
-precision mediump usampler2D;
+precision highp usampler2D;
 
 uniform vec2 resolution;
 uniform usampler2D cells;
