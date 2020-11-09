@@ -1,10 +1,10 @@
 #version 300 es
 
 precision highp float;
-precision mediump isampler2D;
+precision mediump usampler2D;
 
 uniform vec2 resolution;
-uniform isampler2D cells;
+uniform usampler2D cells;
 
 out vec4 fragColor;
 
@@ -17,10 +17,10 @@ vec3 hsv(float h, float s, float v){
 void main(void){
     vec2 p = vec2(gl_FragCoord.x / resolution.x, gl_FragCoord.y / resolution.y);
 
-    ivec4 smpColor = texture(cells, p);
+    uvec4 smpColor = texture(cells, p);
 
-    int value = smpColor.r;
-    int thermal = smpColor.g;
-    vec3 rgb = hsv(float(256 - thermal) / 400.0, 0.8, float(smpColor.r) / 255.0);
+    uint value = smpColor.r;
+    uint thermal = smpColor.g;
+    vec3 rgb = hsv(float(256u - thermal) / 400.0, 0.8, float(value) / 255.0);
     fragColor = vec4(rgb, 1.0);
 }
