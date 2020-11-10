@@ -1,11 +1,5 @@
 "use strict";
 
-onload = () =>
-    Promise.all([
-        'common_vs.glsl', 'init_fs.glsl', 'process_fs.glsl', 'render_fs.glsl'
-    ].map(name => fetch(name).then(res => res.text())))
-    .then(main);
-
 let run = true;
 function stop() { run = false; }
 
@@ -13,7 +7,12 @@ const WIDTH = 512;
 const HEIGHT = 256;
 const ZOOM = 3;
 
-function main(resource) {
+async function fetch_glsl(name) {
+    const res = await fetch(name);
+    return res.text();
+}
+
+onload = async () => {
     const canvas = document.getElementById('canvas');
 
     const cw = canvas.width = WIDTH * ZOOM;
@@ -21,10 +20,13 @@ function main(resource) {
 
     const gl = canvas.getContext('webgl2');
 
-    const common_vs = create_VertexShader(resource[0]);
-    const init_fs = create_FragmentShader(resource[1]);
-    const process_fs = create_FragmentShader(resource[2]);
-    const render_fs = create_FragmentShader(resource[3]);
+    let [common_vs_glsl, init_fs_glsl, process_fs_glsl, render_fs_glsl] = await Promise.all([
+        'common_vs.glsl', 'init_fs.glsl', 'process_fs.glsl', 'render_fs.glsl'
+    ].map(fetch_glsl));
+    const common_vs = create_VertexShader(common_vs_glsl);
+    const init_fs = create_FragmentShader(init_fs_glsl);
+    const process_fs = create_FragmentShader(process_fs_glsl);
+    const render_fs = create_FragmentShader(render_fs_glsl);
 
     const initProgram = create_program(common_vs, init_fs, ['resolution', 'seed'], ['position']);
     const processProgram = create_program(common_vs, process_fs, ['resolution', 'cells', 'rule'], ['position']);
