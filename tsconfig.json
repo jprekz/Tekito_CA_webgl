@@ -1,0 +1,8 @@
+{
+    "compilerOptions": {
+        "target": "es2017",
+        "alwaysStrict": true,
+        "sourceMap": true
+    },
+    "files": ["./script.ts"],
+}
